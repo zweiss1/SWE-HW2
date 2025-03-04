@@ -5,16 +5,48 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+
+    <!--Stole this from Dr. Horn's repo-->
+    <script>
+      function showPopup(element) {
+          const popup = element.querySelector(".popup");
+          popup.style.display = "block";
+      }
+
+      function hidePopup(element) {
+          const popup = element.querySelector(".popup");
+          popup.style.display = "none";
+      }
+    </script>
+
     <%- include('./partials/header') %>
+
+
     <h2 style="text-align:center;">Add a Recipe</h2>
+
     <form action="/recipes/addfood" method="POST">
         <label for="name">Recipe Name:</label>
         <input type="text" id="name" name="name">
         <br>
         <p>Ingredients:</p>
-        <table>
+        <div id="tableHolder">
+          <table>
             <!--Make a table of the existing database ingredients here-->
-        </table>
+            <tr>
+            <% ingredients.forEach((ingredient, index) => { %>
+              <% if (index % 3 == 0 && index != 0){ %>
+                </tr><tr>
+              <%}%>
+              <td class="hover-box" onmouseover="showPopup(this)" onmouseleave="hidePopup(this)">
+                <label for=`<%=ingredient.name%>`><%=ingredient.name%></label>
+                <input type="checkbox" name=`<%=ingredient.name%>` id=`<%=ingredient.name%>`> 
+                <div class="popup" style="display:none;"><i><%=ingredient.description%></i></div>
+              </td>
+            <%});%>
+            </tr>
+          </table>
+       </div>
+       <br>
         <input type="submit" value="Submit">
     </form>
   </body>

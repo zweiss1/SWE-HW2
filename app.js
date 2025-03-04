@@ -1,6 +1,5 @@
 var createError = require('http-errors');
 var express = require('express');
-var database = require('./database/connection').dbConnection;
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -25,15 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 //app.use('/users', usersRouter);
 app.use('/recipes', recipesRouter);
-
-//test DB connection
-app.get('/db', (req, res) => {
-  database.query('SELECT * FROM ingredients;', (err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.send(result);
-  })
-});
 
 
 // catch 404 and forward to error handler

@@ -5,19 +5,39 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+
+    <!--this is terrible-->
+    <%function capitalizeFirstLetter(str){%>
+      <%if (str.length == 0) return str;%>
+      <%if (str.length == 1) return str.charAt(0).toUpperCase();%>
+      <%return str.charAt(0).toUpperCase() + str.slice(1);%>
+      <%}%>
+
     <%- include('./partials/header') %>
+
+
     <!--make tables for each protein, we can probably fill these using loops (check out the books example)-->
-    <h2>Beef Dishes</h2>
-    <table id="beefs">
-      
-    </table>
-    <h2>Chicken Dishes</h2>
-    <table id="chickens">
+    <% Object.keys(recipesByProtein).forEach((protein) => { %>
+      <h2>
+        <%=capitalizeFirstLetter(protein)%>
+      </h2>
+      <table> <tr>
+      <% recipesByProtein[protein].forEach((recipe, index) => { %>
+        <% if (index % 3 == 0 && index != 0){ %>
+        </tr><tr>
+        <%}%>
+        <td>
+          <br>
+          <p>
+            <b><%=recipe.name%></b><br><br>
+            <%=recipe.description%>
+          </p>
+          <br>
+        </td>
+      <%})%>
+      </tr>
+      </table>
+    <%})%>
 
-    </table>
-    <h2>Fish Dishes</h2>
-    <table id="fishes">
-
-    </table>
   </body>
 </html>
