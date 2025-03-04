@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Cooking with Zach</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <%- include('./partials/header') %>
+    <main id="indexmain">
+      <div id="favfood">
+        <h2>My Favorite Food</h2>
+        <p>
+          I hate this question. I like too many foods to be able to answer this question well. At this exact moment in time, though, I could really go for some <i>clam chowder</i>.
+        </p>
+      </div>
+      <div id="experience">
+        <h2>My Cooking Experience</h2>
+        <p>
+          I wouldn't say I cook as a hobby, but when I do cook, it's usually really good. My specialties include reverse-seared steak, eggs over-easy, fettuccine alfredo, and sourdough flatbread.
+        </p>
+      </div>
+    </main>
   </body>
 </html>
