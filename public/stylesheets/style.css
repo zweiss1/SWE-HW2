@@ -51,12 +51,16 @@ table {
   text-align: center;
   margin: 0;
   align-items: center;
+  width:70vw;
   /*border: 1px solid black;*/
 }
 
 td {
   border: 1px solid black;
   padding: 4px;
+  margin:10px;
+  max-width: 20px;
+  height:50px;
 }
 
 form {
@@ -68,4 +72,9 @@ form {
   display: flex;
   flex-direction:row;
   justify-content: center;
+}
+
+#errortext {
+  color:red;
+  display: none;
 }

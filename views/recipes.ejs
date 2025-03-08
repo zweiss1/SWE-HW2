@@ -21,6 +21,7 @@
       <h2>
         <%=capitalizeFirstLetter(protein)%>
       </h2>
+      <div id="tableHolder">
       <table> <tr>
       <% recipesByProtein[protein].forEach((recipe, index) => { %>
         <% if (index % 3 == 0 && index != 0){ %>
@@ -37,6 +38,7 @@
       <%})%>
       </tr>
       </table>
+    </div>
     <%})%>
 
   </body>

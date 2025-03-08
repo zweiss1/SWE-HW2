@@ -6,8 +6,61 @@
   </head>
   <body>
 
+    <%- include('./partials/header') %>
+
+
+    <h2 style="text-align:center;">Add a Recipe</h2>
+    <form id="theform" action="/recipes/addfood" method="POST">
+      <p id="errortext"></p>
+        <label for="name">Recipe Name:</label>
+        <input type="text" id="name" name="name">
+        <br>
+        <br>
+        <label for="description">Recipe Description:</label>
+        <br>
+        <!--Figure out how to make this bigger-->
+        <textarea id="description" name="description" rows="4" cols="30"></textarea>
+        <br>
+        <label for="steps">Instructions:</label>
+        <br>
+        <textarea id="steps" name="steps" rows="4" cols="30"></textarea>
+        <p>Ingredients:</p>
+        <div id="tableHolder">
+          <table id="ingreds">
+            <!--Make a table of the existing database ingredients here-->
+            <tr>
+            <% ingredients.forEach((ingredient, index) => { %>
+              <% if (index % 3 == 0 && index != 0){ %>
+                </tr><tr>
+              <%}%>
+              <!--Generate individual table fields-->
+              <td class="hover-box" onmouseover="showPopup(this)" onmouseleave="hidePopup(this)">
+
+                <!--Appears for ingredients that are main proteins-->
+                <% if (ingredient.isprotein == 1){%>
+                  <label for=`<%=ingredient.name%>.protein`><%=ingredient.name%></label>
+                  <input type="radio" class="mainprotein" name="mainprotein" value=<%=ingredient.name%> id=`<%=ingredient.name%>.protein`> 
+                <%}%>
+
+                <!--Appears for other ingredients-->
+                <% if (ingredient.isprotein == 0) { %>
+                  <label for=`<%=ingredient.name%>`><%=ingredient.name%></label>
+                  <input type="checkbox" class="ingredient" name=<%=ingredient.name%> id=`<%=ingredient.name%>`> 
+                <%}%>
+
+                <!--Ingredient description popup-->
+                <div class="popup" style="display:none;"><i><%=ingredient.description%></i></div>
+              </td>
+            <%});%>
+            </tr>
+          </table>
+       </div>
+       <br>
+      <input id="submit" type="submit" value="Submit">
+    </form>
+
     <!--Stole this from Dr. Horn's repo-->
-    <script>
+    <script defer="defer">
       function showPopup(element) {
           const popup = element.querySelector(".popup");
           popup.style.display = "block";
@@ -17,37 +70,79 @@
           const popup = element.querySelector(".popup");
           popup.style.display = "none";
       }
+
+
+      let errtxt = document.getElementById("errortext");
+
+      // Check if the dish has a name and a protein
+      function validateInput(event){
+
+        console.log("Checking input");
+
+        if (document.getElementById("name").value == ''){
+          displayError("Your dish must have a (unique) name!");
+          event.preventDefault();
+          return false;
+        }
+
+        let description = document.getElementById("description");
+        if (description.value.length == 0){
+          displayError("Your recipe needs a description!");
+          event.preventDefault();
+          return false;
+        }
+        else if (description.value.length > 200){
+          displayError("Your recipe's description must be 200 characters or less!");
+          event.preventDefault();
+          return false;
+        }
+
+        let steps = document.getElementById("steps");
+        if (steps.value.length == 0){
+          displayError("Your recipe needs instructions!");
+          event.preventDefault();
+          return false;
+        }
+        else if (steps.value.length > 200){
+          displayError("Your recipe's instructions must be 200 characters or less!");
+          event.preventDefault();
+          return false;
+        }
+
+        let hasProtein = false;
+        let proteinRadios = document.getElementsByClassName("mainprotein");
+
+        //check if we have a main protein
+        for (let i = 0; i < proteinRadios.length; i++){
+          if (proteinRadios[i].checked){
+            hasProtein = true;
+            break;
+          }
+        }
+        if (!hasProtein){
+          displayError("Dish must have a protein!");
+          event.preventDefault();
+          return false;
+        }
+
+        //hideError();
+        hideError();
+        return true;
+      }
+
+      
+      let formSubmit = document.querySelector("#theform");
+      formSubmit.addEventListener("submit", validateInput);
+
+      function hideError(){
+        errtxt.style.display = "none";
+        //document.getElementById("errortext").style.display = "none";
+      }
+
+      function displayError(str){
+        errtxt.style.display = "block";
+        errtxt.textContent = str;
+      }
     </script>
-
-    <%- include('./partials/header') %>
-
-
-    <h2 style="text-align:center;">Add a Recipe</h2>
-
-    <form action="/recipes/addfood" method="POST">
-        <label for="name">Recipe Name:</label>
-        <input type="text" id="name" name="name">
-        <br>
-        <p>Ingredients:</p>
-        <div id="tableHolder">
-          <table>
-            <!--Make a table of the existing database ingredients here-->
-            <tr>
-            <% ingredients.forEach((ingredient, index) => { %>
-              <% if (index % 3 == 0 && index != 0){ %>
-                </tr><tr>
-              <%}%>
-              <td class="hover-box" onmouseover="showPopup(this)" onmouseleave="hidePopup(this)">
-                <label for=`<%=ingredient.name%>`><%=ingredient.name%></label>
-                <input type="checkbox" name=`<%=ingredient.name%>` id=`<%=ingredient.name%>`> 
-                <div class="popup" style="display:none;"><i><%=ingredient.description%></i></div>
-              </td>
-            <%});%>
-            </tr>
-          </table>
-       </div>
-       <br>
-        <input type="submit" value="Submit">
-    </form>
   </body>
 </html>
