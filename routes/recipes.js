@@ -3,9 +3,18 @@ var router = express.Router();
 var database = require('../database/connection').dbConnection;
 
 
+function renderAddRecipe(res){
+  sql = 'SELECT * FROM ingredients';
+  database.query(sql, (err, result) => {
+    if (err) throw err;
+    let ingredients = result;
+    res.render('addrecipe', { ingredients });
+  });
+}
+
 router.get('/', (req, res) => { //sends recipes.ejs with all recipes organized by protein
 
-  sql = 'SELECT name, description, protein FROM recipes;'
+  sql = 'SELECT recipeid, name, description, protein FROM recipes;'
   database.query(sql, (err, result) => { //get all names and descriptions of recipes
     if (err) throw err;
 
@@ -19,19 +28,13 @@ router.get('/', (req, res) => { //sends recipes.ejs with all recipes organized b
         recipesByProtein[recipe.protein].push(recipe);
       }
     });
-    console.log(recipesByProtein);
 
     res.render('recipes', { recipesByProtein} ); // Pass the recipes organized by protein type
   });
 });
 
 router.get('/addrecipe', (req, res) => {
-  sql = 'SELECT * FROM ingredients';
-  database.query(sql, (err, result) => {
-    if (err) throw err;
-    let ingredients = result;
-    res.render('addrecipe', { ingredients });
-  });
+  renderAddRecipe(res);
 });
 
 router.post("/addfood", (req, res) => {
@@ -90,6 +93,54 @@ router.post("/addfood", (req, res) => {
 
     })
   });
+
+  //reload the page after submitting the new recipe to the database
+  renderAddRecipe(res);
+});
+
+// :recipeId is a parameter gathered from the URL
+router.get('/recipe/:recipeId', (req, res) => {
+  // get recipe name from id (I can't use the recipe names as URL parameters because they have spaces, which turn into %20 in the URL)
+  let recipeId = req.params.recipeId;
+
+  let sql = "SELECT name, description, instructions FROM recipes WHERE recipeid = ?;";
+  database.query(sql, recipeId, (err, recipe) => {
+    if (err){
+      throw err;
+    }
+
+    //There should only be one result because recipe IDs are unique
+    recipe = recipe[0];
+
+    // Get all ingredients in the recipe from the junction table
+    sql = "SELECT ingredient_name FROM junction WHERE recipe_name = ?;";
+    database.query(sql, recipe.name, (err, ingredientNames) => {
+      if (err){
+        throw err;
+      }
+      let ingredNames = []
+      ingredientNames.forEach((ingred) => {
+        ingredNames.push(ingred.ingredient_name);
+      });
+
+      //get the rows for each ingredient from the ingredient table
+      sql = "SELECT name, description FROM ingredients WHERE name IN (?);"
+      database.query(sql, [ingredNames], (err, ingredients) => {
+        if (err){
+          throw err;
+        }
+        console.dir(ingredients);
+
+        //serve the recipe page
+        console.log({recipe, ingredients});
+        res.render('recipe', {recipe, ingredients});
+      });
+    });
+  });
+
+
+
+
 });
 
 //test DB connection

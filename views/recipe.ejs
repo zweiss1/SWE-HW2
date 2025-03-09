@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cooking with Zach</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+
+    <!--this is terrible-->
+    <%function capitalizeFirstLetter(str){%>
+      <%if (str.length == 0) return str;%>
+      <%if (str.length == 1) return str.charAt(0).toUpperCase();%>
+      <%return str.charAt(0).toUpperCase() + str.slice(1);%>
+      <%}%>
+
+    <%- include('./partials/header') %>
+
+    <h2 id="recipename"><%=recipe.name%></h2>
+
+    <p style="text-align:center;">
+        <%=recipe.description%>
+    </p>
+
+    <h2>Ingredients</h2>
+
+    <!--List all ingredients in a table.-->
+    <div style="display:flex; justify-content: space-around;">
+        <table>
+            <% ingredients.forEach((ingredient, index) => { %>
+                <% if (index % 3 == 0 && index != 0){ %>
+                </tr><tr>
+                <%}%>
+                <!--Generate individual table fields-->
+                <td class="hover-box" onmouseover="showPopup(this)" onmouseleave="hidePopup(this)">
+                    <p>
+                        <%=ingredient.name%>
+                    </p>
+
+                    <!--Ingredient description popup-->
+                    <div class="popup" style="display:none;"><i><%=ingredient.description%></i></div>
+                </td>
+            <%});%>
+        </table>
+    </div>
+
+    <h3>Instructions</h3>
+
+    <p style="white-space: pre-wrap; text-align: center;" id="instructions"><%=recipe.instructions%></p>
+
+    <!--Stole this from Dr. Horn's repo-->
+    <script defer="defer">
+        function showPopup(element) {
+            const popup = element.querySelector(".popup");
+            popup.style.display = "block";
+        }
+  
+        function hidePopup(element) {
+            const popup = element.querySelector(".popup");
+            popup.style.display = "none";
+        }
+    </script>
+
+        <%- include('./partials/footer') %>
+  </body>
+</html>

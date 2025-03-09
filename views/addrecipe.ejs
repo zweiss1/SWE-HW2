@@ -8,7 +8,7 @@
 
     <%- include('./partials/header') %>
 
-
+    <main>
     <h2 style="text-align:center;">Add a Recipe</h2>
     <form id="theform" action="/recipes/addfood" method="POST">
       <p id="errortext"></p>
@@ -58,6 +58,10 @@
        <br>
       <input id="submit" type="submit" value="Submit">
     </form>
+    </main>
+
+
+    <%- include('./partials/footer') %>
 
     <!--Stole this from Dr. Horn's repo-->
     <script defer="defer">
